@@ -17,6 +17,8 @@ class SessionManager extends SessionHandler
     const SESSION_NAME = "SEVENAJJYSESS";
     const SESSION_LIFE_TIME = 0;
     const TIME_TO_LIVE = 10;
+    const SESSION_CIPHER_ALGO = 'AES-128-ECB';
+    CONST SESSION_CIPHER_KEY = 'S3V3NAJJYSN@2022';
 
     /**
      *  Session Name
@@ -75,14 +77,14 @@ class SessionManager extends SessionHandler
      *
      * @var string
      */
-    private string $_sessCipherAlgo = 'AES-128-ECB';
+    private string $_sessCipherAlgo = self::SESSION_CIPHER_ALGO;
 
     /**
      * The The key used to encrypt and re-decrypt session data .
      *
      * @var string
      */
-    private string $_sessCipherKey = 'S3V3NAJJYSN@2022';
+    private string $_sessCipherKey = self::SESSION_CIPHER_KEY;
 
     /**
      *  Time to live .
@@ -112,7 +114,7 @@ class SessionManager extends SessionHandler
      * @param mixed $key
      * @return mixed
      */
-    public function __get($key):mixed
+    public function __get(mixed $key):mixed
     {
         if (isset($_SESSION[$key])) {
             $data = @unserialize($_SESSION[$key]) ;
@@ -133,7 +135,7 @@ class SessionManager extends SessionHandler
      * @param mixed $value
      * @return void
      */
-    public function __set($key, $value):void
+    public function __set(mixed $key, mixed $value):void
     {
         if (is_object($value)) {
             $_SESSION[$key] = @serialize($value);
@@ -147,7 +149,7 @@ class SessionManager extends SessionHandler
      * @param mixed $key
      * @return bool
      */
-    public function __isset($key):bool
+    public function __isset(mixed $key):bool
     {
         return isset($_SESSION[$key]) ? true : false ;
     }
@@ -155,11 +157,10 @@ class SessionManager extends SessionHandler
     /**
      * Read session data
      * 
-     * @param string $id — The session id to read data for.
-     * @param string $sessId
+     * @param string $sessId — The session id to read data for.
      * @return string|false
      */
-    public function read($sessId):string|false
+    public function read(string $sessId):string|false
     {
         return openssl_decrypt(parent::read($sessId), $this->_sessCipherAlgo, $this->_sessCipherKey);
     }
@@ -167,13 +168,13 @@ class SessionManager extends SessionHandler
     /**
      * Write session data
      * 
-     * @param string $id — The session id.
+     * @param string $sessId — The session id.
      * @param string $data 
      * The encoded session data. This data is the result of the PHP internally encoding the $_SESSION superglobal to a serialized string and passing it as this parameter. Please note sessions use an alternative serialization method.
-     * @param string $sessId
+     * 
      * @return bool
      */
-    public function write($sessId, $data):bool
+    public function write(string $sessId, string $data):bool
     {
         return parent::write($sessId, openssl_encrypt($data, $this->_sessCipherAlgo, $this->_sessCipherKey));
     }
@@ -181,9 +182,9 @@ class SessionManager extends SessionHandler
     /**
      * Session start.
      * 
-     * @return bool
+     * @return void
      */
-    public function start()
+    public function start():void
     {
         if ('' === session_id()) {
             if (session_start()) {
@@ -198,7 +199,7 @@ class SessionManager extends SessionHandler
      * 
      * @return bool
      */
-    private function _setSessionStartTime()
+    private function _setSessionStartTime():bool
     {
         if (!isset($this->sessionStartTime)) {
             $this->sessionStartTime = time();
