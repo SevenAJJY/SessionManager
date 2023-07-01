@@ -18,7 +18,7 @@ class SessionManager extends SessionHandler
     const SESSION_LIFE_TIME = 0;
     const TIME_TO_LIVE = 10;
     const SESSION_CIPHER_ALGO = 'AES-128-ECB';
-    CONST SESSION_CIPHER_KEY = 'S3V3NAJJYSN@2022';
+    const SESSION_CIPHER_KEY = 'S3V3NAJJYSN@2022';
 
     /**
      *  Session Name
